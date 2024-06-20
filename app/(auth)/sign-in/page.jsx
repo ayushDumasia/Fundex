@@ -1,22 +1,50 @@
-import AuthComponent from '@/components/AuthComponent';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { auth, googleProvider, firestore } from '../firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const SignInPage = () => {
+    const router = useRouter();
+    const [user, loading, error] = useAuthState(auth);
+
+    const signInWithGoogle = async () => {
+        try {
+            const result = await auth.signInWithPopup(googleProvider);
+            const { user } = result;
+
+            const userDoc = await firestore.collection('users').doc(user.uid).get();
+
+            if (!userDoc.exists) {
+                await firestore.collection('users').doc(user.uid).set({
+                    name: user.displayName,
+                    email: user.email,
+                    photoURL: user.photoURL,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                });
+            }
+
+            router.push('/stepform');
+        } catch (error) {
+            console.error('Error signing in with Google:', error.message);
+        }
+    };
+
+    useEffect(() => {
+        if (user) {
+            router.push('/stepform');
+        }
+    }, [user, router]);
+
     return (
         <div className="flex items-center justify-center h-screen">
-            <AuthComponent />
-            <div className="text-center">
-                <h1 className="text-3xl font-bold mb-4">Sign In / Sign Up</h1>
+            <div className="bg-white p-8 rounded shadow-md max-w-lg mx-auto mt-10">
+                <h2 className="text-2xl mb-4">Sign In</h2>
+                {error && <p className="text-red-500 mb-4">{error.message}</p>}
                 <button
-                    onClick={() => handleSignIn(googleProvider)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded m-2"
+                    onClick={signInWithGoogle}
+                    className="bg-blue-500 text-white p-2 rounded w-full"
                 >
-                    Sign in with Google
-                </button>
-                <button
-                    onClick={() => handleSignIn(githubProvider)}
-                    className="bg-gray-800 hover:bg-gray-900 text-white py-2 px-4 rounded m-2"
-                >
-                    Sign in with GitHub
+                    Sign In with Google
                 </button>
             </div>
         </div>
