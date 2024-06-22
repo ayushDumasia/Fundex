@@ -1,18 +1,29 @@
+'use client';
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { auth, googleProvider, firestore } from '../firebase';
+import { useRouter } from 'next/navigation';
+import {
+    app,
+    auth,
+    firestore,
+    googleProvider,
+} from '@/firebaseService/firebase.config';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { getAuth } from 'firebase/auth';
 
 const SignInPage = () => {
+    let auth = getAuth(app);
     const router = useRouter();
     const [user, loading, error] = useAuthState(auth);
 
     const signInWithGoogle = async () => {
         try {
-            const result = await auth.signInWithPopup(googleProvider);
+            const result = await auth.signInWithPopup(auth, googleProvider);
             const { user } = result;
 
-            const userDoc = await firestore.collection('users').doc(user.uid).get();
+            const userDoc = await firestore
+                .collection('User')
+                .doc(user.uid)
+                .get();
 
             if (!userDoc.exists) {
                 await firestore.collection('users').doc(user.uid).set({
@@ -23,7 +34,7 @@ const SignInPage = () => {
                 });
             }
 
-            router.push('/stepform');
+            router.push('/additionalinfo');
         } catch (error) {
             console.error('Error signing in with Google:', error.message);
         }
