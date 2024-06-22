@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const steps = [
     {
@@ -78,6 +78,7 @@ const steps = [
 const StepForm = () => {
     const [step, setStep] = useState(0);
     const [formData, setFormData] = useState({});
+    const router = useRouter();
 
     const handleButtonClick = (name, value) => {
         setFormData({
@@ -94,8 +95,9 @@ const StepForm = () => {
         if (step < steps.length - 1) {
             setStep(step + 1);
         } else {
-            // Form submission logic
+            const searchParams = new URLSearchParams(formData).toString();
             console.log("Form submitted:", formData);
+            router.push(`/manage?${searchParams}`);
         }
     };
 
