@@ -1,23 +1,26 @@
+'use client';
+import React from 'react';
 import Sidebar from '@/components/Sidebar';
+import { Provider, useSelector } from 'react-redux';
+import { store } from '../redux/store';
+import { Providers } from '@/redux/provider';
 import './globals.css';
-export const metadata = {
-  title: 'Your App Title',
-  description: 'Your App Description',
-};
 
 const RootLayout = ({ children }) => {
-  return (
-    <html lang="en">
-      <head>
-      </head>
-      <body className="min-h-screen flex">
-        <Sidebar />
-        <main className="flex-1 p-4">
-          {children}
-        </main>
-      </body>
-    </html>
-  );
+    // const email = useSelector((state) => state.user);
+    // useEffect(() => {});
+
+    return (
+        <html lang="en">
+            <head></head>
+            <body className="min-h-screen flex">
+                <Providers store={store}>
+                    <Sidebar />
+                    <main className="flex-1 p-4">{children}</main>
+                </Providers>
+            </body>
+        </html>
+    );
 };
 
 export default RootLayout;
