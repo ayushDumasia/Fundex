@@ -15,8 +15,8 @@ const RootLayout = ({ children }) => {
             <head></head>
             <body className="min-h-screen flex">
                 <Providers store={store}>
-                    <Sidebar />
-                    <main className="flex-1 p-4">{children}</main>
+                    {/* <Sidebar /> */}
+                    <main className="flex-1">{children}</main>
                 </Providers>
             </body>
         </html>
