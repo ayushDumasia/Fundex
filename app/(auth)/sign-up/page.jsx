@@ -41,6 +41,7 @@ const SignUpPage = () => {
     useEffect(() => {
         console.log('Email : ', email);
     }, [email]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);

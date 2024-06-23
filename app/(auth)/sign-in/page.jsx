@@ -9,19 +9,35 @@ import {
     googleProvider,
 } from '@/firebaseService/firebase.config';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { getAuth } from 'firebase/auth';
 import { useState } from 'react';
 import Link from 'next/link';
 import { FaRegEye } from 'react-icons/fa';
 import { FaEyeSlash } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { theme } from '@/theme';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    addUserData,
+    userCollection,
+} from '@/firebaseService/collections/userCollection/userCollection';
+import { getDocs, query, where } from 'firebase/firestore';
+import { setUser } from '@/redux/userReducer/userSlice.redux';
 
 const SignInPage = () => {
     let auth = getAuth(app);
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+    const { email } = useSelector((state) => state.user);
     const [showPassword, setShowPassword] = useState(false);
+    const dispatch = useDispatch();
     const [inputType, setInputType] = useState('password');
     const [icon, setIcon] = useState(<FaRegEye />);
     const router = useRouter();
-    const [user, loading, error] = useAuthState(auth);
+    const [error, setError] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -29,40 +45,67 @@ const SignInPage = () => {
         setIcon(showPassword ? <FaEyeSlash /> : <FaRegEye />);
     };
 
-    const signInWithGoogle = async () => {
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const handleLoginBtn = async (e) => {
+        e.preventDefault();
+        setError(null);
+        setIsSubmitting(true);
         try {
-            const result = await auth.signInWithPopup(googleProvider);
+            const { email, password } = formData;
+        } catch (err) {
+            setError(error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const signInWithGoogle = async () => {
+        console.log('click');
+        try {
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider);
             const { user } = result;
+            const { displayName, email, photoURL } = user;
 
-            const userDoc = await firestore
-                .collection('User')
-                .doc(user.uid)
-                .get();
+            const q = query(userCollection, where('email', '==', email));
+            const querySnapshot = await getDocs(q);
 
-            if (!userDoc.exists) {
-                await firestore.collection('users').doc(user.uid).set({
-                    name: user.displayName,
-                    email: user.email,
-                    photoURL: user.photoURL,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            if (querySnapshot.empty) {
+                await addUserData({
+                    displayName,
+                    email,
+                    photoURL,
                 });
+                console.log('New User');
+                router.push('/stepform');
+            } else {
+                console.log('Old User');
+                router.push('/additionalinfo');
             }
-
-            router.push('/additionalinfo');
+            dispatch(setUser({ id: null, email: email }));
         } catch (error) {
             console.error('Error signing in with Google:', error.message);
         }
     };
 
-    // useEffect(() => {
-    //     if (user) {
-    //         router.push('/stepform');
-    //     }
-    // }, [user, router]);
-
     return (
-        <div className="flex bg-black justify-center h-full items-center  font-normal">
-            <div className="flex flex-col w-[38%] bg-[#383838] text-white justify-center h-[708px] pl-[150px] px-[100px] rounded-l-2xl">
+        <div
+            style={{
+                backgroundColor: theme.loginPage.background,
+            }}
+            className={`flex  justify-center h-full items-center  font-normal`}
+        >
+            <div
+                style={{ backgroundColor: theme.loginPage.box }}
+                className="flex flex-col w-[38%]  text-white justify-center h-[708px] pl-[150px] px-[100px] rounded-l-2xl"
+            >
                 <div className="mb-[20px]">
                     <svg
                         width="50"
@@ -79,11 +122,13 @@ const SignInPage = () => {
                     <p className="mb-8">
                         See your growth and get consulting support!
                     </p>
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        className="border border-gray-400 h-[3rem] bg-transparent rounded-3xl w-full px-4 mb-6 mt-[10px]"
-                    />
+                    <button
+                        onClick={signInWithGoogle}
+                        className="border flex items-center justify-center gap-3 border-gray-400 h-[3rem] bg-[#494949] rounded-3xl w-full px-4 mb-6 mt-[10px]"
+                    >
+                        <FcGoogle className="text-2xl" />
+                        <p>Continue with google</p>
+                    </button>
                 </div>
                 <div className="flex items-center">
                     <div className="flex-grow border-t border-gray-400"></div>
@@ -100,7 +145,9 @@ const SignInPage = () => {
                         </label>
                         <input
                             type="text"
-                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
                             placeholder="mail@website.com"
                             className="border border-gray-400 h-[3rem] bg-transparent rounded-3xl w-full px-4"
                         />
@@ -113,7 +160,9 @@ const SignInPage = () => {
                             <input
                                 placeholder="Min. 8 characters"
                                 type={inputType}
-                                id="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                name="password"
                                 className="border border-gray-400 h-[3rem] bg-transparent rounded-3xl w-full px-4 pr-12"
                             />
                             <button
@@ -132,7 +181,7 @@ const SignInPage = () => {
                         </div>
                         <p>Forgot password ? </p>
                     </div>
-                    <button className="border border-gray-400 h-[3rem] bg-white text-black rounded-3xl w-full px-4">
+                    <button className="border border-gray-400 font-extrabold h-[3rem] bg-white text-black rounded-3xl w-full px-4">
                         Login
                     </button>
                     <p>Not registered yet? Create an Account</p>
