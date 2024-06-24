@@ -58,56 +58,64 @@ const Manage = () => {
     };
 
     return (
-        <div className="bg-white p-8 rounded shadow-md max-w-lg mx-auto mt-10">
-            <h2 className="text-2xl mb-4">Manage Your Finances</h2>
-            <div className="mb-4">
-                <h3 className="text-xl mb-2">Your Responses:</h3>
-                <pre className="bg-gray-100 p-4 rounded">
+        <div className="bg-[#1c1c24] p-8 rounded-2xl shadow-md max-w-[75%] mx-auto mt-10 text-white flex flex-col">
+            <h2 className="text-4xl font-bold mb-8 text-[#8d6dfe]">
+                Manage Your Finances
+            </h2>
+            <div className="mb-8">
+                <h3 className="text-2xl font-normal mb-4 text-gray-300">
+                    Your Responses:
+                </h3>
+                <pre className="bg-[#384152] p-4 rounded-lg font-normal text-white">
                     {JSON.stringify(formData, null, 2)}
                 </pre>
             </div>
-            {Object.keys(formData).map((key) => (
-                <div key={key} className="mb-4">
-                    <h4 className="text-lg mb-2">{key}</h4>
-                    <div className="mb-2">
-                        <label className="block mb-1">
-                            Total Amount for {key}:
-                        </label>
-                        <input
-                            type="number"
-                            value={amounts[key]?.totalAmount || ''}
-                            onChange={(e) =>
-                                handleAmountChange(
-                                    key,
-                                    'totalAmount',
-                                    e.target.value
-                                )
-                            }
-                            className="w-full p-2 border rounded"
-                        />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {Object.keys(formData).map((key) => (
+                    <div key={key} className="mb-8">
+                        <h4 className="text-2xl font-normal mb-4 text-gray-300">
+                            {key}
+                        </h4>
+                        <div className="mb-4">
+                            <label className="block mb-2 text-xl font-normal text-gray-300">
+                                Total Amount for {key}:
+                            </label>
+                            <input
+                                type="number"
+                                value={amounts[key]?.totalAmount || ''}
+                                onChange={(e) =>
+                                    handleAmountChange(
+                                        key,
+                                        'totalAmount',
+                                        e.target.value
+                                    )
+                                }
+                                className="w-full p-4 font-normal rounded-lg bg-[#384152] text-white focus:outline-none focus:ring-2 focus:ring-[#8d6dfe]"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block mb-2 text-xl font-normal text-gray-300">
+                                Monthly Payment for {key}:
+                            </label>
+                            <input
+                                type="number"
+                                value={amounts[key]?.monthlyPayment || ''}
+                                onChange={(e) =>
+                                    handleAmountChange(
+                                        key,
+                                        'monthlyPayment',
+                                        e.target.value
+                                    )
+                                }
+                                className="w-full p-4 font-normal rounded-lg bg-[#384152] text-white focus:outline-none focus:ring-2 focus:ring-[#8d6dfe]"
+                            />
+                        </div>
                     </div>
-                    <div className="mb-2">
-                        <label className="block mb-1">
-                            Monthly Payment for {key}:
-                        </label>
-                        <input
-                            type="number"
-                            value={amounts[key]?.monthlyPayment || ''}
-                            onChange={(e) =>
-                                handleAmountChange(
-                                    key,
-                                    'monthlyPayment',
-                                    e.target.value
-                                )
-                            }
-                            className="w-full p-2 border rounded"
-                        />
-                    </div>
-                </div>
-            ))}
+                ))}
+            </div>
             <button
                 onClick={handleSubmit}
-                className="bg-blue-500 text-white p-2 rounded w-full"
+                className="bg-[#8d6dfe] text-black p-4 rounded-lg w-full font-normal transition duration-200 hover:bg-[#8d6dfe]/80 mt-8"
             >
                 Submit
             </button>
