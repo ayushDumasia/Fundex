@@ -1,9 +1,12 @@
 import StepForm from '@/components/StepForm';
-
+import { theme } from '@/theme';
 export default function Home() {
     return (
-        <main className='bg-gray-100 min-h-screen flex items-center justify-center'>
+        <div
+            style={{ backgroundColor: theme.loginPage.background }}
+            className=" text-white h-screen"
+        >
             <StepForm />
-        </main>
+        </div>
     );
 }

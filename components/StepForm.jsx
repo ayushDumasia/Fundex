@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
 import { userCollection } from '@/firebaseService/collections/userCollection/userCollection';
+import Image from 'next/image';
+import { theme } from '@/theme';
 
 const steps = [
     {
@@ -15,7 +17,7 @@ const steps = [
         question: 'How do you feel about your finances today?',
         type: 'options',
         name: 'finance_feeling',
-        options: ['Great', 'Okay', 'Bad', 'Terrible'],
+        options: [' 😊 Great', ' 🙂 Okay', ' 😕 Bad', ' 😢 Terrible'],
     },
     {
         question: 'Who do you spend money on?',
@@ -123,6 +125,19 @@ const StepForm = () => {
         });
     };
 
+    const isCurrentStepValid = () => {
+        if (currentStep.type === 'text') {
+            return formData[currentStep.name]?.trim().length > 0;
+        }
+        if (currentStep.type === 'options' || currentStep.type === 'yesno') {
+            return formData[currentStep.name] !== undefined;
+        }
+        if (currentStep.type === 'multiple') {
+            return formData[currentStep.name]?.length > 0;
+        }
+        return true;
+    };
+
     const handleNext = async () => {
         if (step < steps.length - 1) {
             setStep(step + 1);
@@ -149,97 +164,161 @@ const StepForm = () => {
     const currentStep = steps[step];
 
     return (
-        <div className="bg-white p-8 rounded shadow-md max-w-lg mx-auto mt-10">
-            <h2 className="text-2xl mb-4">{currentStep.question}</h2>
-            <div className="mb-4 flex flex-col space-y-2">
-                {currentStep.type === 'text' && (
-                    <input
-                        type="text"
-                        name={currentStep.name}
-                        value={formData[currentStep.name] || ''}
-                        onChange={(e) =>
-                            handleButtonClick(currentStep.name, e.target.value)
-                        }
-                        className="w-full p-2 border rounded"
-                    />
-                )}
-                {currentStep.type === 'options' &&
-                    currentStep.options.map((option) => (
-                        <button
-                            key={option}
-                            onClick={() =>
-                                handleButtonClick(currentStep.name, option)
-                            }
-                            className={`p-2 border rounded w-full ${
-                                formData[currentStep.name] === option
-                                    ? 'bg-blue-500 text-white'
-                                    : 'bg-gray-200'
-                            }`}
-                        >
-                            {option}
-                        </button>
-                    ))}
-                {currentStep.type === 'multiple' &&
-                    currentStep.options.map((option) => (
-                        <button
-                            key={option}
-                            onClick={() =>
-                                handleButtonClick(currentStep.name, option)
-                            }
-                            className={`p-2 border rounded w-full ${
-                                formData[currentStep.name] &&
-                                formData[currentStep.name].includes(option)
-                                    ? 'bg-blue-500 text-white'
-                                    : 'bg-gray-200'
-                            }`}
-                        >
-                            {option}
-                        </button>
-                    ))}
-                {currentStep.type === 'yesno' && (
-                    <div className="flex flex-col space-y-2">
-                        <button
-                            onClick={() =>
-                                handleButtonClick(currentStep.name, 'Yes')
-                            }
-                            className={`p-2 border rounded w-full ${
-                                formData[currentStep.name] === 'Yes'
-                                    ? 'bg-blue-500 text-white'
-                                    : 'bg-gray-200'
-                            }`}
-                        >
-                            Yes
-                        </button>
-                        <button
-                            onClick={() =>
-                                handleButtonClick(currentStep.name, 'No')
-                            }
-                            className={`p-2 border rounded w-full ${
-                                formData[currentStep.name] === 'No'
-                                    ? 'bg-blue-500 text-white'
-                                    : 'bg-gray-200'
-                            }`}
-                        >
-                            No
-                        </button>
+        <div className="p-8 rounded-2xl shadow-md max-w-[75%] mx-auto mt-10 bg-[#1c1c24] min-h-[70%] text-white flex flex-col">
+            <div className="flex flex-1 items-center">
+                {step <= 3 && (
+                    <div className="w-1/2 flex justify-center">
+                        <Image
+                            // src="/public/image.svg"
+                            src="https://app.ynabassets.com/24.41/images/category-set-wizard/mug.svg"
+                            width={550}
+                            height={550}
+                            alt="Example image"
+                            className="rounded-2xl  bg-[#8d6dfe] h-[35rem]"
+                        />
                     </div>
                 )}
-            </div>
-            <div className="flex justify-between mt-4">
-                {step > 0 && (
-                    <button
-                        onClick={handlePrev}
-                        className="bg-gray-200 text-gray-700 p-2 rounded w-full mr-2"
-                    >
-                        Previous
-                    </button>
-                )}
-                <button
-                    onClick={handleNext}
-                    className="bg-blue-500 text-white p-2 rounded w-full"
-                >
-                    {step < steps.length - 1 ? 'Continue' : 'Submit'}
-                </button>
+                <div className="flex-1 flex flex-col justify-center items-center text-start">
+                    <div className="w-full max-w-md">
+                        {currentStep.type === 'text' && (
+                            <div className="flex flex-col ">
+                                <h2 className="text-2xl font-normal mb-8  text-gray-300">
+                                    What should we call you?
+                                </h2>
+                                <input
+                                    type="text"
+                                    placeholder="Your first name"
+                                    name={currentStep.name}
+                                    value={formData[currentStep.name] || ''}
+                                    onChange={(e) =>
+                                        handleButtonClick(
+                                            currentStep.name,
+                                            e.target.value
+                                        )
+                                    }
+                                    className="w-full p-4  font-normal rounded-lg bg-[#384152] text-white focus:outline-none focus:ring-2 focus:ring-[#8d6dfe]"
+                                />
+                            </div>
+                        )}
+                        {currentStep.type === 'options' && (
+                            <div>
+                                <h2 className="text-2xl font-normal mb-4 text-gray-300">
+                                    {currentStep.question}
+                                </h2>
+                                {currentStep.options.map((option) => (
+                                    <button
+                                        key={option}
+                                        onClick={() =>
+                                            handleButtonClick(
+                                                currentStep.name,
+                                                option
+                                            )
+                                        }
+                                        className={`p-4 border rounded-lg font-normal w-full text-left mb-2 ${
+                                            formData[currentStep.name] ===
+                                            option
+                                                ? 'bg-[#8d6dfe] text-white'
+                                                : 'bg-[#384152] text-white'
+                                        } hover:bg-[#8d6dfe]/80 hover:text-white transition duration-200`}
+                                    >
+                                        {option}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                        {currentStep.type === 'multiple' && (
+                            <div>
+                                <h2 className="text-2xl font-normal mb-8 text-gray-300">
+                                    {currentStep.question}
+                                </h2>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {currentStep.options.map((option) => (
+                                        <button
+                                            key={option}
+                                            onClick={() =>
+                                                handleButtonClick(
+                                                    currentStep.name,
+                                                    option
+                                                )
+                                            }
+                                            className={`p-4 border rounded-lg w-full font-normal text-left mb-2 ${
+                                                formData[
+                                                    currentStep.name
+                                                ]?.includes(option)
+                                                    ? 'bg-[#8d6dfe] text-white'
+                                                    : 'bg-[#384152] text-white'
+                                            } hover:bg-[#8d6dfe]/80 hover:text-white transition duration-200`}
+                                        >
+                                            {option}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        {currentStep.type === 'yesno' && (
+                            <div className="mb-4">
+                                <h2 className="text-2xl font-normal mb-10 text-gray-300">
+                                    {currentStep.question}
+                                </h2>
+                                <div className="flex flex-col space-y-4">
+                                    <button
+                                        onClick={() =>
+                                            handleButtonClick(
+                                                currentStep.name,
+                                                'Yes'
+                                            )
+                                        }
+                                        className={`p-4 border rounded-lg w-full mb-2 ${
+                                            formData[currentStep.name] === 'Yes'
+                                                ? 'bg-[#8d6dfe] text-white'
+                                                : 'bg-[#384152] text-white'
+                                        } hover:bg-[#8d6dfe]/80 hover:text-white transition duration-200`}
+                                    >
+                                        Yes
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            handleButtonClick(
+                                                currentStep.name,
+                                                'No'
+                                            )
+                                        }
+                                        className={`p-4 border rounded-lg w-full mb-2 ${
+                                            formData[currentStep.name] === 'No'
+                                                ? 'bg-[#8d6dfe] text-white'
+                                                : 'bg-[#384152] text-white'
+                                        } hover:bg-[#8d6dfe]/80 hover:text-white transition duration-200`}
+                                    >
+                                        No
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                        <div className="flex font-normal justify-between mt-16 w-full">
+                            {step > 0 && (
+                                <button
+                                    onClick={handlePrev}
+                                    className="bg-purple-600 text-white p-4 rounded-lg w-[48%] transition duration-200 hover:bg-purple-500"
+                                >
+                                    Previous
+                                </button>
+                            )}
+                            <button
+                                onClick={handleNext}
+                                disabled={!isCurrentStepValid()}
+                                className={`p-4 rounded-lg w-[48%] transition duration-200 ${
+                                    isCurrentStepValid()
+                                        ? 'bg-[#8d6dfe] text-white hover:bg-[#8d6dfe]/80'
+                                        : 'bg-gray-500 text-gray-400 cursor-not-allowed'
+                                }`}
+                            >
+                                {step < steps.length - 1
+                                    ? 'Continue'
+                                    : 'Submit'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
