@@ -10,6 +10,7 @@ import { GiCash } from 'react-icons/gi';
 import { IoDocuments } from 'react-icons/io5';
 import { BiTransferAlt } from 'react-icons/bi';
 import { MdLogout } from 'react-icons/md';
+import { FaChevronRight } from 'react-icons/fa6';
 import { FaRegUser } from 'react-icons/fa';
 
 const Sidebar = () => {
@@ -94,26 +95,60 @@ const Sidebar = () => {
             </div>
 
             {/* Sidebar toggle button */}
-            <button
+            <div
                 className="pr-2 pt-20 bg-[#1c1c24]  flex flex-col"
-                onClick={toggleSidebar}
+                // onClick={toggleSidebar}
             >
-                <div className="p-3 ">
+                <button
+                    onClick={toggleSidebar}
+                    className="mb-[50px] ml-[15px]"
+                    title="open sidebar"
+                >
+                    <FaChevronRight />
+                </button>
+                <Link
+                    href="/"
+                    className="p-3 hover:bg-[#384152] rounded-md"
+                    title="Dashboard"
+                >
                     <LuLayoutGrid size={25} />
-                </div>
-                <div className="p-3 ">
+                </Link>
+                <Link
+                    href="/"
+                    className="p-3 hover:bg-[#384152] rounded-md"
+                    title="Target"
+                >
                     <PiTargetThin size={25} />
-                </div>
-                <div className="p-3 ">
+                </Link>
+                <Link
+                    title="Funding"
+                    href="/"
+                    className="p-3 hover:bg-[#384152] rounded-md"
+                >
                     <GiCash size={25} />
-                </div>
-                <div className="p-3 ">
+                </Link>
+                <Link
+                    title="Transfer"
+                    href="/"
+                    className="p-3 hover:bg-[#384152] rounded-md"
+                >
+                    <BiTransferAlt size={25} />
+                </Link>
+                <Link
+                    href="/"
+                    className="p-3 hover:bg-[#384152] rounded-md"
+                    title="Articles"
+                >
                     <IoDocuments size={25} />
-                </div>
-                <div className="p-3 ">
+                </Link>
+                <Link
+                    href="/"
+                    className="p-3 hover:bg-[#384152] rounded-md"
+                    title="open sidebar"
+                >
                     <MdLogout size={25} />
-                </div>
-            </button>
+                </Link>
+            </div>
         </div>
     );
 };
