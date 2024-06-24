@@ -21,7 +21,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="flex font-normal  text-white">
+        <div className="flex font-normal  text-white z-40">
             {/* Sidebar */}
             <div
                 className={`fixed inset-y-0 rounded-3xl left-0 transform ${
@@ -65,7 +65,7 @@ const Sidebar = () => {
                                 &nbsp;&nbsp;Transfer
                             </p>
                         </Link>
-                        <Link href="/" passHref>
+                        <Link href="/articles" passHref>
                             <p className=" flex items-center p-2 h-[3.5rem]  rounded hover:bg-[#384152] transition-all">
                                 <IoDocuments size={25} />
                                 &nbsp;&nbsp;Articles
@@ -135,7 +135,7 @@ const Sidebar = () => {
                     <BiTransferAlt size={25} />
                 </Link>
                 <Link
-                    href="/"
+                    href="/articles"
                     className="p-3 hover:bg-[#384152] rounded-md"
                     title="Articles"
                 >
