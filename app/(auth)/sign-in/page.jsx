@@ -69,14 +69,17 @@ const SignInPage = () => {
     const signInWithGoogle = async () => {
         console.log('click');
         try {
+            console.log('try Block');
             const provider = new GoogleAuthProvider();
             const result = await signInWithPopup(auth, provider);
             const { user } = result;
             const { displayName, email, photoURL } = user;
 
+            console.log('try Block 1');
             const q = query(userCollection, where('email', '==', email));
             const querySnapshot = await getDocs(q);
 
+            console.log('try Block 2');
             if (querySnapshot.empty) {
                 await addUserData({
                     displayName,
@@ -90,6 +93,7 @@ const SignInPage = () => {
                 router.push('/additionalinfo');
             }
             dispatch(setUser({ id: null, email: email }));
+            console.log(email);
         } catch (error) {
             console.error('Error signing in with Google:', error.message);
         }

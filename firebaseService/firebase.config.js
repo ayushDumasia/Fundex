@@ -1,8 +1,8 @@
 // utils/firebaseAuth.js
-import { initializeApp } from 'firebase/app'
-import { GoogleAuthProvider } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
-import { getStorage } from 'firebase/storage'
+import { initializeApp } from 'firebase/app';
+import { GoogleAuthProvider } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 // const firebaseConfig = {
 //     apiKey: 'AIzaSyByimD_W-ez0-WmgFb4n7NU65CIkGL922A',
@@ -22,16 +22,11 @@ const firebaseConfig = {
     messagingSenderId: '342738812356',
     appId: '1:342738812356:web:eb5bc3a2757893e125b891',
     measurementId: 'G-TCKSH9X72Y',
-}
+};
 
-// if (!firebase.apps.length) {
-//     firebase.initializeApp(firebaseConfig)
-// } else {
-//     firebase.app()
-// }
-const app = initializeApp(firebaseConfig)
-const googleProvider = new GoogleAuthProvider()
-const db = getFirestore(app)
-const storage = getStorage(app)
+const app = initializeApp(firebaseConfig);
+const googleProvider = new GoogleAuthProvider();
+const db = getFirestore(app);
+const storage = getStorage(app);
 
-export { app, db, storage, googleProvider }
+export { app, db, storage, googleProvider };

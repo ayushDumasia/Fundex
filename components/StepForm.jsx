@@ -96,6 +96,7 @@ const StepForm = () => {
     const [userDocId, setUserDocId] = useState(null);
 
     useEffect(() => {
+        console.log(email);
         const fetchUser = async () => {
             try {
                 const querySnapshot = await getDocs(findUser);

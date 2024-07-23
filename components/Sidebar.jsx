@@ -12,9 +12,11 @@ import { BiTransferAlt } from 'react-icons/bi';
 import { MdLogout } from 'react-icons/md';
 import { FaChevronRight } from 'react-icons/fa6';
 import { FaRegUser } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const { email } = useSelector((state) => state.user);
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -22,44 +24,41 @@ const Sidebar = () => {
 
     return (
         <div className="flex font-normal  text-white z-40">
-            {/* Sidebar */}
             <div
                 className={`fixed inset-y-0 rounded-3xl left-0 transform ${
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 } transition-transform duration-300 ease-in-out bg-[#1c1c24]  w-60 p-4 flex flex-col justify-between `}
             >
                 <div>
-                    {/* Close button */}
                     <button className="mb-4 " onClick={toggleSidebar}>
                         <IoCloseOutline size={30} />
                     </button>
-                    <Link href="/" passHref>
+                    <Link href="/profile" passHref>
                         <p className=" flex items-center p-2 h-[3.5rem]  rounded hover:bg-[#384152] transition-all">
                             <FaRegUser size={25} />
-                            &nbsp;&nbsp;profile
+                            &nbsp;&nbsp;{email}
                         </p>
                     </Link>
-                    {/* Navigation links */}
                     <nav className="space-y-2 mt-20 font-normal">
-                        <Link href="/Dashboard">
+                        <Link href="/manage">
                             <p className=" flex items-center p-2 h-[3.5rem]  rounded hover:bg-[#384152] transition-all">
                                 <LuLayoutGrid size={25} />
                                 &nbsp;&nbsp;Dashboard
                             </p>
                         </Link>
-                        <Link href="/" passHref>
+                        <Link href="/target" passHref>
                             <p className=" flex items-center p-2 h-[3.5rem]  rounded hover:bg-[#384152] transition-all">
                                 <PiTargetThin size={25} />
                                 &nbsp;&nbsp;Target
                             </p>
                         </Link>
-                        <Link href="/" passHref>
+                        <Link href="/funding" passHref>
                             <p className=" flex items-center p-2 h-[3.5rem]  rounded hover:bg-[#384152] transition-all">
                                 <GiCash size={25} />
                                 &nbsp;&nbsp;Funding
                             </p>
                         </Link>
-                        <Link href="/" passHref>
+                        <Link href="/transfer" passHref>
                             <p className=" flex items-center p-2 h-[3.5rem]  rounded hover:bg-[#384152] transition-all">
                                 <BiTransferAlt size={25} />
                                 &nbsp;&nbsp;Transfer
@@ -71,7 +70,7 @@ const Sidebar = () => {
                                 &nbsp;&nbsp;Articles
                             </p>
                         </Link>
-                        <Link href="/" passHref>
+                        <Link href="/logout" passHref>
                             <p className=" flex items-center p-2 h-[3.5rem]  rounded hover:bg-[#384152] transition-all">
                                 <MdLogout size={25} />
                                 &nbsp;&nbsp;Logout
@@ -80,7 +79,6 @@ const Sidebar = () => {
                     </nav>
                 </div>
                 <div>
-                    {/* Profile and Logout */}
                     <Link href="/profile" passHref>
                         <p className=" flex items-center p-2 h-[3.5rem]  rounded hover:bg-[#384152] transition-all">
                             <IoPersonSharp size={24} />
@@ -94,7 +92,6 @@ const Sidebar = () => {
                 </div>
             </div>
 
-            {/* Sidebar toggle button */}
             <div
                 className="pr-2 pt-20 bg-[#1c1c24]  flex flex-col"
                 // onClick={toggleSidebar}
@@ -122,14 +119,14 @@ const Sidebar = () => {
                 </Link>
                 <Link
                     title="Funding"
-                    href="/"
+                    href="/funding"
                     className="p-3 hover:bg-[#384152] rounded-md"
                 >
                     <GiCash size={25} />
                 </Link>
                 <Link
                     title="Transfer"
-                    href="/"
+                    href="/transfer"
                     className="p-3 hover:bg-[#384152] rounded-md"
                 >
                     <BiTransferAlt size={25} />
@@ -142,9 +139,9 @@ const Sidebar = () => {
                     <IoDocuments size={25} />
                 </Link>
                 <Link
-                    href="/"
+                    href="/logot"
                     className="p-3 hover:bg-[#384152] rounded-md"
-                    title="open sidebar"
+                    title="Logout"
                 >
                     <MdLogout size={25} />
                 </Link>
